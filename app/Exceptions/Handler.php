@@ -27,4 +27,13 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        if ($request->is('api/*')) {
+            return app(ApiHandler::class)->render($request, $e);
+        }
+
+        return app(WebHandler::class)->render($request, $e);
+    }
 }
