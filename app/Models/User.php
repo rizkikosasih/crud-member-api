@@ -2,44 +2,42 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * untuk mendapatkan identifier yang akan disimpan di dalam claim "sub" JWT.
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * untuk mendapatkan custom claim tambahan untuk JWT.
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+    protected $fillable = ['name', 'email', 'password'];
+    protected $hidden = ['password'];
+
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'email_verified_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+
+    public function hobbies()
+    {
+        return $this->hasMany(Hobby::class);
+    }
 }
