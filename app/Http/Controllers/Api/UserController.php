@@ -6,12 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Hobby;
+use App\Traits\ApiResponse;
 
 class UserController extends Controller
 {
-    public function index()
+    use ApiResponse;
+
+    public function index(Request $request)
     {
-        return response()->json(User::with('hobbies')->get());
+        $perPage = $request->get('per_page', 10);
+
+        $users = User::with('hobbies')->paginate($perPage);
+
+        return $this->success($users, 'List of users retrieved successfully');
     }
 
     public function store(Request $request)
@@ -33,33 +40,51 @@ class UserController extends Controller
             $user->hobbies()->create(['name' => $h]);
         }
 
-        return response()->json($user->load('hobbies'), 201);
+        return $this->success($user->load('hobbies'), 'User created successfully', 201);
     }
 
     public function show($id)
     {
-        return response()->json(User::with('hobbies')->findOrFail($id));
+        $user = User::with('hobbies')->find($id);
+
+        if (!$user) {
+            return $this->error('User not found', 404);
+        }
+
+        return $this->success($user, 'User retrieved successfully');
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
 
-        $user->update($request->only('name','email','password'));
+        if (!$user) {
+            return $this->error('User not found', 404);
+        }
+
+        $user->update($request->only('name', 'email', 'password'));
 
         if ($request->has('hobbies')) {
             $user->hobbies()->delete();
+
             foreach ($request->hobbies as $h) {
                 $user->hobbies()->create(['name' => $h]);
             }
         }
 
-        return response()->json($user->load('hobbies'));
+        return $this->success($user->load('hobbies'), 'User updated successfully');
     }
 
     public function destroy($id)
     {
-        User::findOrFail($id)->delete();
-        return response()->json(['message' => 'User deleted']);
+        $user = User::find($id);
+
+        if (!$user) {
+            return $this->error('User not found', 404);
+        }
+
+        $user->delete();
+
+        return $this->success(null, 'User deleted successfully');
     }
 }
