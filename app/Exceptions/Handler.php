@@ -34,6 +34,6 @@ class Handler extends ExceptionHandler
             return app(ApiHandler::class)->render($request, $e);
         }
 
-        return app(WebHandler::class)->render($request, $e);
+        return parent::render($request, $e);
     }
 }
