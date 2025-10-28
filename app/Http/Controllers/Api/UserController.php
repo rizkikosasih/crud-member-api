@@ -26,14 +26,13 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
             'hobbies' => 'array'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt("pass@123"),
         ]);
 
         foreach ($request->hobbies ?? [] as $h) {
