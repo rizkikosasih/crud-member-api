@@ -59,7 +59,9 @@ cp .env.example .env
 Ubah konfigurasi database di `.env`:
 
 ```dotenv
-DB_DATABASE=crud_member_api DB_USERNAME=root DB_PASSWORD=your_password
+DB_DATABASE=crud_member_api
+DB_USERNAME=root
+DB_PASSWORD=your_password
 ```
 
 4. Generate app key:
