@@ -1,3 +1,10 @@
-assets/
+assets
+vendor
+node_modules
+public
+storage
+bootstrap/cache
 public/assets/**
 !public/assets/modules/**
+package-lock.json
+composer.lock

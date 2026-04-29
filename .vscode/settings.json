@@ -34,6 +34,5 @@
     "**/build/**"
   ],
   "prettier.ignorePath": ".prettierignore",
-  "prettier.configPath": ".prettierrc.json",
-
+  "prettier.configPath": ".prettierrc.json"
 }
