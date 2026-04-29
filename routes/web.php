@@ -25,5 +25,7 @@ Route::get('/home', fn() => view('home'))->name('home');
 Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('users.index');
     Route::get('/create', [UserController::class, 'create'])->name('users.create');
-    Route::get('/edit/{id}', [UserController::class, 'edit'])->name('users.edit')->where('id', '[0-9]+');
+    Route::get('/edit/{id}', [UserController::class, 'edit'])
+        ->name('users.edit')
+        ->where('id', '[0-9]+');
 });

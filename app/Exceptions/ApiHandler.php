@@ -7,10 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\{
-    TokenExpiredException,
-    TokenInvalidException
-};
+use PHPOpenSourceSaver\JWTAuth\Exceptions\{TokenExpiredException, TokenInvalidException};
 use App\Traits\ApiResponse;
 
 class ApiHandler
@@ -43,6 +40,9 @@ class ApiHandler
         }
 
         // 🔹 Fallback generic
-        return $this->error($e->getMessage(), method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500);
+        return $this->error(
+            $e->getMessage(),
+            method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500,
+        );
     }
 }

@@ -10,9 +10,11 @@ class UserHobbySeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory(100)->create()->each(function ($user) {
-            // Untuk setiap user, generate 1-5 hobby
-            $hobbies = Hobby::factory(rand(1, 5))->create(['user_id' => $user->id]);
-        });
+        User::factory(100)
+            ->create()
+            ->each(function ($user) {
+                // Untuk setiap user, generate 1-5 hobby
+                $hobbies = Hobby::factory(rand(1, 5))->create(['user_id' => $user->id]);
+            });
     }
 }

@@ -30,17 +30,21 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return $this->success([
-            'user' => $user,
-            'token' => $token,
-        ], 'User registered successfully', 201);
+        return $this->success(
+            [
+                'user' => $user,
+                'token' => $token,
+            ],
+            'User registered successfully',
+            201,
+        );
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
+        if (!($token = JWTAuth::attempt($credentials))) {
             return $this->error('Invalid credentials', 401);
         }
 

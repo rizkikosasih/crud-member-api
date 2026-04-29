@@ -35,7 +35,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-
     public function hobbies()
     {
         return $this->hasMany(Hobby::class);
