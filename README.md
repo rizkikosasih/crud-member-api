@@ -5,101 +5,95 @@ Sistem sederhana untuk **mengelola member dan hobinya** dengan **CRUD API dan Fr
 ## **Fitur Utama**
 
 - CRUD Member/User (Create, Read, Update, Delete)
-
 - Manage Hobbies per User
-
 - Pagination di list member
 
+---
 
 ## **Tech Stack**
 
 - **Backend:** Laravel 10, JWT
-
 - **Frontend:** TailwindCSS 4 + DaisyUI 5.3.10, Blade
-
 - **Database:** MySQL
-
 - **Request Async:** Axios
 
+---
 
 ## **Requirement / Prasyarat**
 
 - PHP >= 8.2
-
 - Laravel 10
-
 - MySQL / MariaDB
-
 - Composer & Node.js / npm
 
+---
 
 ## **Setup / Instalasi**
 
 1. Clone repository:
 
-
-```bash 
+```bash
 git clone <repository-url> cd <project-folder>
 ```
 
 2. Install dependencies:
 
-
 ```bash
-composer install npm install
+composer install
+npm install
 ```
 
-3. Copy `.env` dan konfigurasi database:
+3. Copy `.env`
 
-
-```bash
+```terminal
 cp .env.example .env
 ```
 
-Ubah konfigurasi database di `.env`:
+4. Ubah konfigurasi database di `.env`:
 
-```dotenv
+```env
 DB_DATABASE=crud_member_api
 DB_USERNAME=root
 DB_PASSWORD=your_password
 ```
 
-4. Generate app key:
+5. Generate app key:
 
-
-```bash
+```artisan
 php artisan key:generate
 ```
 
-5. Generate JWT secret:
+6. Generate JWT secret:
 
-
-```bash
+```artisan
 php artisan jwt:secret
 ```
 
-6. Migrasi dan seeder:
+7. Migrasi dan seeder:
 
-
-```bash
+```artisan
 php artisan migrate --seed
 ```
 
-7. Jalankan frontend dev server:
+8. Jalankan frontend dev server:
 
-
-```bash
+```artisan
 npm run dev
 ```
 
-8. Jalankan Laravel server:
+9. Jalankan Laravel server:
 
-
-```bash
+```artisan
 php artisan serve
 ```
 
-Buka browser di `http://localhost:8000`.
+10. Buka browser di
+
+```
+http://localhost:8000
+```
+
+---
 
 ## **Struktur Folder**
 
@@ -113,11 +107,10 @@ Buka browser di `http://localhost:8000`.
 
 - `routes/web.php` → Route Web
 
+---
 
 ## **Catatan**
 
 - Database default: `crud_member_api`
-
 - Frontend dijalankan dengan `npm run dev`, tidak perlu build production
-
 - JWT secret wajib di-generate agar autentikasi API berfungsi

@@ -2,17 +2,21 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "format": "prettier --write .",
         "dev": "vite",
         "build": "vite build"
     },
     "devDependencies": {
+        "@prettier/plugin-php": "^0.24.0",
         "axios": "^1.7.2",
         "laravel-vite-plugin": "^1.0.0",
+        "prettier": "^3.8.3",
+        "prettier-plugin-blade": "^3.1.6",
         "vite": "^6.4.1"
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.16",
-        "tailwindcss": "^4.1.0",
-        "daisyui": "^5.3.10"
+        "daisyui": "^5.3.10",
+        "tailwindcss": "^4.1.0"
     }
 }
