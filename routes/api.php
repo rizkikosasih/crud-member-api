@@ -28,5 +28,11 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::prefix('profile')->group(function () {
+        Route::put('password', [UserController::class, 'updatePassword'])->name(
+            'profile.password.update',
+        );
+    }); // endpoint /api/profile/password
+
     Route::post('logout', [AuthController::class, 'logout']);
 });

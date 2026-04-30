@@ -2,8 +2,8 @@
   <div class="max-w-lg mx-auto mt-6">
     <h2 class="text-xl font-bold mb-4">Edit User</h2>
 
-    <div class="alert alert-error mt-4 hidden" id="alert-error"></div>
-    <div class="alert alert-success mt-4 hidden" id="alert-success"></div>
+    <div class="alert alert-error my-4 hidden" id="alert-error"></div>
+    <div class="alert alert-success my-4 hidden" id="alert-success"></div>
 
     <form id="edit-user-form">
       @csrf

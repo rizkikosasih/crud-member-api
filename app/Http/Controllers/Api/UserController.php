@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Hobby;
 use App\Traits\ApiResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,7 +16,9 @@ class UserController extends Controller
     {
         $perPage = $request->get('per_page', 10);
 
-        $users = User::with('hobbies')->paginate($perPage);
+        $users = User::with('hobbies')
+            ->where('id', '!=', auth()->id())
+            ->paginate($perPage);
 
         return $this->success($users, 'List of users retrieved successfully');
     }
@@ -32,7 +34,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt('pass@123'),
+            'password' => Hash::make('pass@123'),
         ]);
 
         foreach ($request->hobbies ?? [] as $h) {
@@ -42,7 +44,7 @@ class UserController extends Controller
         return $this->success($user->load('hobbies'), 'User created successfully', 201);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $user = User::with('hobbies')->find($id);
 
@@ -53,7 +55,7 @@ class UserController extends Controller
         return $this->success($user, 'User retrieved successfully');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $user = User::find($id);
 
@@ -61,7 +63,7 @@ class UserController extends Controller
             return $this->error('User not found', 404);
         }
 
-        $user->update($request->only('name', 'email', 'password'));
+        $user->update($request->only(['name', 'email', 'password']));
 
         if ($request->has('hobbies')) {
             $user->hobbies()->delete();
@@ -74,7 +76,27 @@ class UserController extends Controller
         return $this->success($user->load('hobbies'), 'User updated successfully');
     }
 
-    public function destroy($id)
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = $request->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return $this->error('The current password is incorrect.', 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return $this->success(null, 'Password updated successfully.');
+    }
+
+    public function destroy(int $id)
     {
         $user = User::find($id);
 

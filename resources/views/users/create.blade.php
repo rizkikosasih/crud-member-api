@@ -1,5 +1,5 @@
 <x-layouts.app>
-  <div class="alert alert-error mt-4 hidden" id="alert-error"></div>
+  <div class="alert alert-error my-4 hidden" id="alert-error"></div>
 
   <form id="user-form" class="max-w-md mx-auto mt-6">
     <div class="mb-4">

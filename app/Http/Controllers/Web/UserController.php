@@ -16,8 +16,13 @@ class UserController extends Controller
         return view('users.create');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         return view('users.edit', ['userId' => $id]);
+    }
+
+    public function editPassword()
+    {
+        return view('users.edit-password');
     }
 }

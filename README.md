@@ -33,7 +33,7 @@ Sistem sederhana untuk **mengelola member dan hobinya** dengan **CRUD API dan Fr
 1. Clone repository:
 
 ```bash
-git clone <repository-url> cd <project-folder>
+git clone https://github.com/rizkikosasih/crud-member-api.git cd <project-folder>
 ```
 
 2. Install dependencies:
@@ -75,19 +75,13 @@ php artisan jwt:secret
 php artisan migrate --seed
 ```
 
-8. Jalankan frontend dev server:
+8. Jalankan frontend dev dan laravel server:
 
-```artisan
-npm run dev
+```npm
+npm run dev:all
 ```
 
-9. Jalankan Laravel server:
-
-```artisan
-php artisan serve
-```
-
-10. Buka browser di
+9. Buka browser di
 
 ```
 http://localhost:8000

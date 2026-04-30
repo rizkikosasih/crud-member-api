@@ -29,3 +29,9 @@ Route::prefix('users')->group(function () {
         ->name('users.edit')
         ->where('id', '[0-9]+');
 });
+
+Route::prefix('profile')->group(function () {
+    Route::get('password/edit', [UserController::class, 'editPassword'])->name(
+        'profile.password.edit',
+    );
+});

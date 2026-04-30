@@ -19,7 +19,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
         $user = User::create([
@@ -42,7 +42,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only(['email', 'password']);
 
         if (!($token = JWTAuth::attempt($credentials))) {
             return $this->error('Invalid credentials', 401);
@@ -62,8 +62,8 @@ class AuthController extends Controller
         }
     }
 
-    public function me()
+    public function me(Request $request)
     {
-        return $this->success(auth()->user(), 'Authenticated user');
+        return $this->success($request->user(), 'Authenticated user');
     }
 }
