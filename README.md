@@ -33,7 +33,8 @@ Sistem sederhana untuk **mengelola member dan hobinya** dengan **CRUD API dan Fr
 1. Clone repository:
 
 ```bash
-git clone https://github.com/rizkikosasih/crud-member-api.git cd <project-folder>
+git clone https://github.com/rizkikosasih/crud-member-api.git <project-folder>
+cd <project-folder>
 ```
 
 2. Install dependencies:
