@@ -52,9 +52,21 @@ class RolePermissionSeeder extends Seeder
         */
 
         foreach ($rolePermissions as $roleName => $permissions) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => 'api',
+            ]);
 
-            $role->syncPermissions($permissions);
+            $permissionModels = [];
+
+            foreach ($permissions as $permission) {
+                $permissionModels[] = Permission::firstOrCreate([
+                    'name' => $permission,
+                    'guard_name' => 'api',
+                ]);
+            }
+
+            $role->syncPermissions($permissionModels);
         }
     }
 }
