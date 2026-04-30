@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Laravel cache & generated files
+bootstrap/cache/
+storage/
+public/storage/
+
+# Build assets
+public/build/
+public/mix-manifest.json
+public/hot
+dist/
+
+# Assets
+public/assets/**
+!public/assets/modules/**
+
+# Logs & runtime
+storage/logs/
+*.log
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing & coverage
+coverage/
+.phpunit.result.cache
+
+# Temporary files
+tmp-*/
+temp-*/
