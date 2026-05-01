@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Helpers\ApiResponse;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
@@ -18,13 +19,17 @@ class AuthService
 
     public function register(array $data): array
     {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $user = DB::transaction(function () use ($data) {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        $user->assignRole($data['roles'] ?? [config('user.default_role')]);
+            $user->assignRole($data['roles'] ?? [config('user.default_role')]);
+
+            return $user;
+        });
 
         return ApiResponse::success($user, 'User registered');
     }
