@@ -34,7 +34,7 @@ class ApiExceptionHandler
             // VALIDATION
             $e instanceof ValidationException => self::jsonResponse(
                 422,
-                'The given data was invalid.',
+                'Validation failed.',
                 $e->errors(),
             ),
             // JWT AUTH FAIL (NO TOKEN / GUARD FAIL)
@@ -66,7 +66,7 @@ class ApiExceptionHandler
         };
     }
 
-    private static function jsonResponse(int $code, string $message, array|null $errors = null)
+    private static function jsonResponse(int $code, string $message, ?array $errors = [])
     {
         return response()->json(ApiResponse::error($message, $errors), $code);
     }

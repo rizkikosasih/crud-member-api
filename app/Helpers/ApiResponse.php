@@ -13,7 +13,7 @@ class ApiResponse
         ];
     }
 
-    public static function error(string $message = 'Error', array $errors = []): array
+    public static function error(string $message = 'Error', ?array $errors = []): array
     {
         return [
             'status' => 'error',
