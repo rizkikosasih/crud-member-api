@@ -9,8 +9,10 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
@@ -24,81 +26,140 @@ class ApiExceptionHandler
         return config('app.debug');
     }
 
+    private static function debug(Throwable $e): array
+    {
+        return [
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ];
+    }
+
     public static function render(Throwable $e, Request $request)
     {
-        if (!$request->expectsJson()) {
+        if (!($request->isJson() || $request->wantsJson())) {
             return null;
         }
 
         return match (true) {
-            // VALIDATION
+            /**
+             * VALIDATION
+             */
             $e instanceof ValidationException => self::jsonResponse(
                 422,
                 'Validation failed.',
-                $e->errors(),
+                self::isDebug() ? array_merge($e->errors(), self::debug($e)) : $e->errors(),
             ),
-            // JWT AUTH FAIL (NO TOKEN / GUARD FAIL)
-            $e instanceof AuthenticationException => self::jsonResponse(401, 'Unauthenticated.'),
-            // JWT TOKEN ISSUES
-            $e instanceof TokenExpiredException => self::jsonResponse(401, 'Token expired.'),
-
-            $e instanceof TokenInvalidException => self::jsonResponse(401, 'Invalid token.'),
-
-            $e instanceof TokenBlacklistedException => self::jsonResponse(
+            /**
+             * AUTHENTICATION (JWT + GUARD)
+             */
+            $e instanceof AuthenticationException,
+            $e instanceof TokenExpiredException,
+            $e instanceof TokenInvalidException,
+            $e instanceof TokenBlacklistedException
+                => self::jsonResponse(
                 401,
-                'Token has been blacklisted.',
+                self::authMessage($e),
+                self::isDebug() ? self::debug($e) : [],
             ),
-            // AUTHORIZATION (ROLE / PERMISSION)
-            $e instanceof AuthorizationException || $e instanceof SpatieUnauthorizedException
-                => self::jsonResponse(403, 'You do not have the required permissions.'),
-            // MODEL NOT FOUND
-            $e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException
-                => self::jsonResponse(404, 'Resource not found.'),
-            // METHOD ERROR
+            /**
+             * AUTHORIZATION
+             */
+            $e instanceof AuthorizationException,
+            $e instanceof SpatieUnauthorizedException,
+            $e instanceof AccessDeniedHttpException
+                => self::jsonResponse(403, 'Forbidden.', self::isDebug() ? self::debug($e) : []),
+            /**
+             * MODEL NOT FOUND
+             */
+            $e instanceof ModelNotFoundException,
+            $e instanceof NotFoundHttpException
+                => self::jsonResponse(
+                404,
+                'Resource not found.',
+                self::isDebug() ? self::debug($e) : [],
+            ),
+            /**
+             * METHOD NOT ALLOWED
+             */
             $e instanceof MethodNotAllowedHttpException => self::jsonResponse(
                 405,
                 'Method not allowed.',
+                self::isDebug() ? self::debug($e) : [],
             ),
-            // DATABASE ERROR
+            /**
+             * HTTP EXCEPTION GENERIC
+             */
+            $e instanceof HttpException => self::jsonResponse(
+                $e->getStatusCode(),
+                self::isDebug() ? $e->getMessage() : 'HTTP Error.',
+                self::isDebug() ? self::debug($e) : [],
+            ),
+            /**
+             * DATABASE ERROR
+             */
             $e instanceof QueryException => self::handleDatabaseError($e),
-            // FALLBACK
+            /**
+             * FALLBACK
+             */
             default => self::handleFallback($e),
         };
     }
 
+    /**
+     * AUTH MESSAGE MAPPER
+     */
+    private static function authMessage(Throwable $e): string
+    {
+        return match (true) {
+            $e instanceof TokenExpiredException => 'Token expired.',
+            $e instanceof TokenInvalidException => 'Invalid token.',
+            $e instanceof TokenBlacklistedException => 'Token has been blacklisted.',
+            $e instanceof AuthenticationException => 'Unauthenticated.',
+            default => 'Authentication failed.',
+        };
+    }
+
+    /**
+     * STANDARD RESPONSE
+     */
     private static function jsonResponse(int $code, string $message, ?array $errors = [])
     {
-        return ApiResponse::error($message, $errors, $code);
+        return ApiResponse::error($message, $errors ?? [], $code);
     }
 
+    /**
+     * DATABASE ERROR HANDLER
+     */
     private static function handleDatabaseError(QueryException $e)
     {
-        $message = self::isDebug() ? $e->getMessage() : 'Internal Database Error.';
-
-        $errors = self::isDebug()
-            ? [
-                'sql' => $e->getSql(),
-                'bindings' => $e->getBindings(),
-            ]
-            : null;
-
-        return self::jsonResponse(500, $message, $errors);
+        return self::jsonResponse(
+            500,
+            self::isDebug() ? $e->getMessage() : 'Internal Database Error.',
+            self::isDebug()
+                ? array_merge(
+                    [
+                        'sql' => $e->getSql(),
+                        'bindings' => $e->getBindings(),
+                    ],
+                    self::debug($e),
+                )
+                : [],
+        );
     }
 
+    /**
+     * FALLBACK HANDLER
+     */
     private static function handleFallback(Throwable $e)
     {
-        $code = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+        $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
 
-        $message = self::isDebug() ? $e->getMessage() : 'Internal Server Error.';
-
-        $errors = self::isDebug()
-            ? [
-                'exception' => get_class($e),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]
-            : null;
-
-        return self::jsonResponse($code, $message, $errors);
+        return self::jsonResponse(
+            $code,
+            self::isDebug() ? $e->getMessage() : 'Internal Server Error.',
+            self::isDebug() ? self::debug($e) : [],
+        );
     }
 }
