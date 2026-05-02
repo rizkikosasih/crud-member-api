@@ -29,33 +29,24 @@ class UserRepository implements UserRepositoryInterface
             ->withQueryString();
     }
 
-    public function findById(int $id)
+    public function findById(int $id): User
     {
         return User::query()->findOrFail($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): User
     {
         return User::create($data);
     }
 
-    public function update(int $id, array $data)
+    public function update(User $user, array $data): User
     {
-        $user = User::findOrFail($id);
         $user->update($data);
-
         return $user;
     }
 
-    public function delete(int $id)
+    public function delete(User $user): bool
     {
-        $user = User::findOrFail($id);
         return $user->delete();
-    }
-
-    public function restore(int $id)
-    {
-        $user = User::withTrashed()->findOrFail($id);
-        return $user->restore();
     }
 }

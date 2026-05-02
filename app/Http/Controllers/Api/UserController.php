@@ -19,7 +19,9 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $users = $this->userService->index($request->all());
+        $filters = $request->only(['search', 'is_active', 'per_page']);
+
+        $users = $this->userService->index($filters);
 
         return ApiResponse::pagination(
             $users,
@@ -36,7 +38,10 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        return ApiResponse::success(new UserResource($user), 'User detail showed.');
+        return ApiResponse::success(
+            new UserResource($this->userService->show($user)),
+            'User detail showed.',
+        );
     }
 
     public function update(UpdateRequest $request, User $user)

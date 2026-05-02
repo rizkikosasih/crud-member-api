@@ -55,7 +55,8 @@ Route::middleware(['auth:api', 'role:admin'])
 
         Route::patch('/{user}/restore', 'restore')
             ->name('api.user.restore')
-            ->middleware('permission:user.restore');
+            ->middleware('permission:user.restore')
+            ->withTrashed();
     });
 
 /**

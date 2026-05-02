@@ -2,15 +2,14 @@
 
 namespace App\Contracts;
 
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface UserRepositoryInterface
 {
     public function paginate(array $filters = []): LengthAwarePaginator;
-    public function findById(int $id);
-
-    public function create(array $data);
-    public function update(int $id, array $data);
-    public function delete(int $id);
-    public function restore(int $id);
+    public function findById(int $id): User;
+    public function create(array $data): User;
+    public function update(User $user, array $data): User;
+    public function delete(User $user): bool;
 }

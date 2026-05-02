@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Models\User;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class UserService
 {
@@ -19,6 +19,7 @@ class UserService
 
     public function show(User $user): User
     {
+        $user->load('roles');
         return $user;
     }
 
@@ -34,7 +35,7 @@ class UserService
 
             $user->assignRole($data['roles'] ?? [config('user.defaults.role')]);
 
-            return $user;
+            return $user->load('roles');
         });
 
         return $user;
@@ -42,12 +43,9 @@ class UserService
 
     public function update(User $user, array $data): User
     {
-        if ($user->id === auth('api')->id()) {
-            throw new HttpException(403, 'You cannot update yourself');
-        }
-
         $user = DB::transaction(function () use ($user, $data) {
-            $user->update(
+            $user = $this->userRepository->update(
+                $user,
                 array_filter([
                     'name' => $data['name'] ?? $user->name,
                     'email' => $data['email'] ?? $user->email,
@@ -59,7 +57,7 @@ class UserService
                 $user->syncRoles($data['roles']);
             }
 
-            return $user->refresh()->load('roles');
+            return $user->load('roles');
         });
 
         return $user;
@@ -73,7 +71,8 @@ class UserService
     public function restore(User $user): User
     {
         $user->restore();
+        $user->load('roles');
 
-        return $user->refresh();
+        return $user;
     }
 }
