@@ -30,7 +30,6 @@ class ApiExceptionHandler
     {
         return [
             'exception' => get_class($e),
-            'message' => $e->getMessage(),
             'file' => $e->getFile(),
             'line' => $e->getLine(),
         ];
