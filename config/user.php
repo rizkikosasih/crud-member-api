@@ -1,5 +1,8 @@
 <?php
 
 return [
-    'default_role' => env('USER_DEFAULT_ROLE', 'staff'),
+    'defaults' => [
+        'password' => env('USER_DEFAULT_PASSWORD'),
+        'role' => env('USER_DEFAULT_ROLE', 'staff'),
+    ],
 ];
