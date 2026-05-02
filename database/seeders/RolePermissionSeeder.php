@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
                 'user.create',
                 'user.update',
                 'user.delete',
+                'user.restore',
                 'member.view',
                 'member.create',
                 'member.update',
