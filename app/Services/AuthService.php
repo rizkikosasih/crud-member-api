@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\ApiResponse;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
 class AuthService
@@ -17,7 +16,7 @@ class AuthService
         $this->guard = auth('api');
     }
 
-    public function register(array $data): array
+    public function register(array $data): User
     {
         $user = DB::transaction(function () use ($data) {
             $user = User::create([
@@ -26,46 +25,38 @@ class AuthService
                 'password' => Hash::make($data['password']),
             ]);
 
-            $user->assignRole($data['roles'] ?? [config('user.default_role')]);
+            $user->assignRole($data['roles'] ?? [config('user.defaults.role')]);
 
             return $user;
         });
 
-        return ApiResponse::success($user, 'User registered');
+        return $user;
     }
 
     public function login(array $credentials): array
     {
         if (!($token = $this->guard->attempt($credentials))) {
-            return ApiResponse::error('Invalid credentials');
+            abort(401, 'Invalid credentials');
         }
 
-        return ApiResponse::success(
-            [
-                'token' => $token,
-                'type' => 'bearer',
-            ],
-            'Login success',
-        );
+        return [
+            'token' => $token,
+            'type' => 'bearer',
+        ];
     }
 
-    public function logout(): array
+    public function logout(): void
     {
-        $this->guard->logout();
-
-        return ApiResponse::success(null, 'Logout success');
+        return $this->guard->logout();
     }
 
     public function refresh(): array
     {
         $token = $this->guard->refresh();
 
-        return ApiResponse::success(
-            [
-                'token' => $token,
-                'type' => 'bearer',
-            ],
-            'Token refreshed',
-        );
+        return [
+            'token' => $token,
+            'type' => 'bearer',
+        ];
     }
 }

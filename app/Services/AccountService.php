@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\ApiResponse;
 use App\Models\User;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
 
@@ -16,24 +15,24 @@ class AccountService
         $this->guard = auth('api');
     }
 
-    public function me(): array
+    public function me(): User
     {
-        return ApiResponse::success($this->guard->user());
+        return $this->guard->user();
     }
 
-    public function changePassword(array $data): array
+    public function changePassword(array $data): User
     {
         /** @var User $user */
         $user = $this->guard->user();
 
         if (!Hash::check($data['old_password'], $user->password)) {
-            return ApiResponse::error('Old password incorrect');
+            abort(422, 'Old password incorrect');
         }
 
         $user->update([
             'password' => Hash::make($data['new_password']),
         ]);
 
-        return ApiResponse::success($user->fresh(), 'Password updated');
+        return $user->fresh();
     }
 }
