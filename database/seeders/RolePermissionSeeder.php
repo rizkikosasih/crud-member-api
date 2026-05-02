@@ -31,6 +31,7 @@ class RolePermissionSeeder extends Seeder
                 'member.create',
                 'member.update',
                 'member.delete',
+                'member.restore',
                 'hobby.view',
                 'hobby.create',
                 'hobby.update',
@@ -43,6 +44,8 @@ class RolePermissionSeeder extends Seeder
                 'member.update',
                 'member.delete',
                 'hobby.view',
+                'hobby.create',
+                'hobby.update',
             ],
         ];
 
