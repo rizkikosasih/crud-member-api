@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\UserController;
 
 /**
@@ -55,4 +56,29 @@ Route::middleware(['auth:api', 'role:admin'])
         Route::patch('/{user}/restore', 'restore')
             ->name('api.user.restore')
             ->middleware('permission:user.restore');
+    });
+
+/**
+ * Member Management
+ */
+Route::prefix('members')
+    ->controller(MemberController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('api.member.index')->middleware('permission:member.view');
+        Route::post('/', 'store')
+            ->name('api.member.create')
+            ->middleware('permission:member.create');
+        Route::get('{member}', 'show')
+            ->name('api.member.detail')
+            ->middleware('permission:member.view');
+        Route::put('{member}', 'update')
+            ->name('api.member.update')
+            ->middleware('permission:member.update');
+        Route::delete('{member}', 'destroy')
+            ->name('api.member.delete')
+            ->middleware('permission:member.delete');
+        Route::patch('{member}/restore', 'restore')
+            ->name('api.member.restore')
+            ->middleware('permission:member.restore')
+            ->withTrashed();
     });
