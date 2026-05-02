@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\Member;
-use App\Repositories\MemberRepository;
+use App\Contracts\MemberRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class MemberService
 {
-    public function __construct(protected MemberRepository $memberRepository) {}
+    public function __construct(protected MemberRepositoryInterface $memberRepository) {}
 
     public function index(array $filters): LengthAwarePaginator
     {
