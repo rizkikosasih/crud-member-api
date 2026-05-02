@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use App\Http\Requests\Auth\LoginRequest;
@@ -13,29 +14,27 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        return response()->json(
-            $this->service->register($request->validated())
+        return ApiResponse::success(
+            $this->service->register($request->validated()),
+            'User registered.',
+            201,
         );
     }
 
     public function login(LoginRequest $request)
     {
-        return response()->json(
-            $this->service->login($request->validated())
-        );
+        return ApiResponse::success($this->service->login($request->validated()), 'Login success.');
     }
 
     public function logout()
     {
-        return response()->json(
-            $this->service->logout()
-        );
+        $this->service->logout();
+
+        return ApiResponse::success(null, 'Logout success.');
     }
 
     public function refresh()
     {
-        return response()->json(
-            $this->service->refresh()
-        );
+        return ApiResponse::success($this->service->refresh(), 'Token Refreshed.');
     }
 }
