@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreRequest;
+use App\Http\Requests\User\UpdateRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+
+class UserController extends Controller
+{
+    public function __construct(protected UserService $userService) {}
+
+    public function index(Request $request)
+    {
+        $users = $this->userService->index($request->all());
+
+        return ApiResponse::pagination(
+            $users,
+            UserResource::class,
+            'Users retrieved successfully.',
+        );
+    }
+
+    public function store(StoreRequest $request)
+    {
+        $user = $this->userService->store($request->validated());
+        return ApiResponse::success(new UserResource($user), 'User retrieved successfully.');
+    }
+
+    public function show(User $user)
+    {
+        return ApiResponse::success(new UserResource($user), 'User detail showed.');
+    }
+
+    public function update(UpdateRequest $request, User $user)
+    {
+        if (Gate::denies('update', $user)) {
+            throw new HttpException(403, 'You cannot update your own account.');
+        }
+
+        $user = $this->userService->update($user, $request->validated());
+        return ApiResponse::success(new UserResource($user), 'User updated.');
+    }
+
+    public function destroy(User $user)
+    {
+        if (Gate::denies('delete', $user)) {
+            throw new HttpException(403, 'You cannot delete your own account.');
+        }
+
+        $this->userService->delete($user);
+
+        return ApiResponse::success(null, 'User deleted.');
+    }
+
+    public function restore(User $user)
+    {
+        if (Gate::denies('restore', $user)) {
+            throw new HttpException(403, 'You cannot restore your own account.');
+        }
+
+        $user = $this->userService->restore($user);
+
+        return ApiResponse::success(new UserResource($user), 'User restored.');
+    }
+}
