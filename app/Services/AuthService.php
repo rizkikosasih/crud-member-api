@@ -47,7 +47,7 @@ class AuthService
 
     public function logout(): void
     {
-        return $this->guard->logout();
+        $this->guard->logout();
     }
 
     public function refresh(): array
