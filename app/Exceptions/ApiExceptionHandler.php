@@ -68,7 +68,7 @@ class ApiExceptionHandler
 
     private static function jsonResponse(int $code, string $message, ?array $errors = [])
     {
-        return response()->json(ApiResponse::error($message, $errors), $code);
+        return ApiResponse::error($message, $errors, $code);
     }
 
     private static function handleDatabaseError(QueryException $e)
