@@ -1,0 +1,123 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Hobby;
+use Illuminate\Database\Seeder;
+
+class HobbySeeder extends Seeder
+{
+    public function run(): void
+    {
+        Hobby::truncate();
+
+        $hobbies = [
+            'Reading Books',
+            'Writing Stories',
+            'Coding',
+            'Web Development',
+            'Mobile Development',
+            'Game Development',
+            'Playing Games',
+            'Watching Movies',
+            'Watching Anime',
+            'Listening to Music',
+            'Playing Guitar',
+            'Playing Piano',
+            'Singing',
+            'Dancing',
+            'Photography',
+            'Videography',
+            'Drawing',
+            'Painting',
+            'Graphic Design',
+            'UI/UX Design',
+            '3D Modeling',
+            'Animation',
+            'Cooking',
+            'Baking',
+            'Traveling',
+            'Hiking',
+            'Camping',
+            'Fishing',
+            'Cycling',
+            'Running',
+            'Swimming',
+            'Fitness Training',
+            'Yoga',
+            'Meditation',
+            'Martial Arts',
+            'Boxing',
+            'Basketball',
+            'Football',
+            'Volleyball',
+            'Badminton',
+            'Tennis',
+            'Skateboarding',
+            'Surfing',
+            'Blogging',
+            'Vlogging',
+            'Podcasting',
+            'Streaming Games',
+            'Tech Exploring',
+            'Learning Languages',
+            'Investing',
+            'Trading Stocks',
+            'Cryptocurrency',
+            'Forex Trading',
+            'Collecting Coins',
+            'Collecting Stamps',
+            'Collecting Figures',
+            'Board Games',
+            'Puzzle Solving',
+            'Sudoku',
+            'Crossword Puzzles',
+            'Magic Tricks',
+            'Acting',
+            'Theater Performance',
+            'Film Making',
+            'Video Editing',
+            'Interior Design',
+            'Architecture Sketching',
+            'Car Modification',
+            'Motorcycling',
+            'Driving Cars',
+            'Coffee Brewing',
+            'Tea Tasting',
+            'Wine Tasting',
+            'Food Tasting',
+            'Gardening',
+            'Bird Watching',
+            'Astronomy',
+            'Stargazing',
+            'Drone Flying',
+            'Robotics',
+            'Artificial Intelligence Study',
+            'Machine Learning',
+            'Data Analysis',
+            'Electronics Projects',
+            'DIY Crafts',
+            'Knitting',
+            'Sewing',
+            'Woodworking',
+            'Model Building',
+            'Calligraphy',
+            'Journaling',
+            'Self Improvement',
+            'Public Speaking',
+            'Networking',
+            'Volunteering',
+            'Entrepreneurship',
+            'Startup Building',
+            'Stock Market Analysis',
+        ];
+
+        $data = [];
+
+        foreach ($hobbies as $hobby) {
+            $data[] = ['name' => $hobby];
+        }
+
+        Hobby::insert($data);
+    }
+}
