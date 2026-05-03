@@ -33,6 +33,6 @@ class AccountService
             'password' => Hash::make($data['new_password']),
         ]);
 
-        return $user->fresh();
+        return $user;
     }
 }
