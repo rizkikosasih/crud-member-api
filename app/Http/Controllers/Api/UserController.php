@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\PatchRequest;
 use App\Http\Requests\User\StoreRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\UserResource;
@@ -45,6 +46,16 @@ class UserController extends Controller
     }
 
     public function update(UpdateRequest $request, User $user)
+    {
+        if (Gate::denies('update', $user)) {
+            throw new HttpException(403, 'You cannot update your own account.');
+        }
+
+        $user = $this->userService->update($user, $request->validated());
+        return ApiResponse::success(new UserResource($user), 'User updated.');
+    }
+
+    public function patch(PatchRequest $request, User $user)
     {
         if (Gate::denies('update', $user)) {
             throw new HttpException(403, 'You cannot update your own account.');

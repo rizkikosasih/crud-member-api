@@ -26,7 +26,7 @@ class UserService
     public function store(array $data): User
     {
         $user = DB::transaction(function () use ($data) {
-            $user = User::create([
+            $user = $this->userRepository->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make(config('user.defaults.password')),
@@ -46,14 +46,10 @@ class UserService
         $user = DB::transaction(function () use ($user, $data) {
             $user = $this->userRepository->update(
                 $user,
-                array_filter([
-                    'name' => $data['name'] ?? $user->name,
-                    'email' => $data['email'] ?? $user->email,
-                    'is_active' => $data['is_active'] ?? $user->is_active,
-                ]),
+                array_intersect_key($data, array_flip(['name', 'email', 'is_active'])),
             );
 
-            if (isset($data['roles'])) {
+            if (array_key_exists('roles', $data)) {
                 $user->syncRoles($data['roles']);
             }
 
