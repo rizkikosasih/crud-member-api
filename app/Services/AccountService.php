@@ -35,4 +35,16 @@ class AccountService
 
         return $user;
     }
+
+    public function update(?array $data): User
+    {
+        /** @var User $user */
+        $user = $this->guard->user();
+
+        if (!empty($data)) {
+            $user->update($data);
+        }
+
+        return $user;
+    }
 }
