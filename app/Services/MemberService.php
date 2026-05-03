@@ -19,13 +19,10 @@ class MemberService
     public function create(array $data): Member
     {
         return DB::transaction(function () use ($data) {
-            $hobbies = $data['hobbies'] ?? [];
-            unset($data['hobbies']);
-
             $member = $this->memberRepository->create($data);
 
-            if ($hobbies) {
-                $member->hobbies()->sync($hobbies);
+            if (array_key_exists('hobbies', $data)) {
+                $member->hobbies()->sync($data['hobbies']);
             }
 
             return $member->load('hobbies');
@@ -35,12 +32,10 @@ class MemberService
     public function update(Member $member, array $data): Member
     {
         return DB::transaction(function () use ($member, $data) {
-            $hobbies = $data['hobbies'] ?? null;
-            unset($data['hobbies']);
-
             $member = $this->memberRepository->update($member, $data);
 
-            if (!is_null($hobbies)) {
+            if (array_key_exists('hobbies', $data)) {
+                $hobbies = $data['hobbies'] ?? [];
                 $member->hobbies()->sync($hobbies);
             }
 

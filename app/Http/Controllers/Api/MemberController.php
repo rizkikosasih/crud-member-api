@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Member\MemberHobbyRequest;
 use App\Http\Requests\Member\StoreRequest;
 use App\Http\Requests\Member\UpdateRequest;
+use App\Http\Requests\Member\PatchRequest;
 use App\Http\Resources\HobbyResource;
 use App\Http\Resources\MemberResource;
 use App\Models\Hobby;
@@ -47,6 +48,13 @@ class MemberController extends Controller
     }
 
     public function update(UpdateRequest $request, Member $member)
+    {
+        $updated = $this->memberService->update($member, $request->validated());
+
+        return ApiResponse::success(new MemberResource($updated), 'Member updated successfully');
+    }
+
+    public function patch(PatchRequest $request, Member $member)
     {
         $updated = $this->memberService->update($member, $request->validated());
 
