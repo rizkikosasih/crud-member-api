@@ -22,30 +22,42 @@ class RolePermissionSeeder extends Seeder
 
         $rolePermissions = [
             'admin' => [
-                'user.view',
-                'user.create',
-                'user.update',
-                'user.delete',
-                'user.restore',
-                'member.view',
-                'member.create',
-                'member.update',
-                'member.delete',
-                'member.restore',
-                'hobby.view',
-                'hobby.create',
-                'hobby.update',
-                'hobby.delete',
+                'users.view',
+                'users.create',
+                'users.update',
+                'users.delete',
+                'users.restore',
+
+                'members.view',
+                'members.create',
+                'members.update',
+                'members.delete',
+                'members.restore',
+
+                'hobbies.view',
+                'hobbies.create',
+                'hobbies.update',
+                'hobbies.delete',
+
+                'members.hobbies.view',
+                'members.hobbies.attach',
+                'members.hobbies.sync',
+                'members.hobbies.detach',
             ],
 
             'staff' => [
-                'member.view',
-                'member.create',
-                'member.update',
-                'member.delete',
-                'hobby.view',
-                'hobby.create',
-                'hobby.update',
+                'members.view',
+                'members.create',
+                'members.update',
+
+                'hobbies.view',
+                'hobbies.create',
+                'hobbies.update',
+
+                'members.hobbies.view',
+                'members.hobbies.attach',
+                'members.hobbies.sync',
+                'members.hobbies.detach',
             ],
         ];
 

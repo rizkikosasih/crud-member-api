@@ -7,121 +7,145 @@ use App\Http\Controllers\Api\HobbyController;
 use App\Http\Controllers\Api\MemberController;
 use App\Http\Controllers\Api\UserController;
 
-/**
- * Authentication
- */
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 Route::prefix('auth')
     ->controller(AuthController::class)
     ->group(function () {
         Route::post('register', 'register')->name('api.auth.register');
+
         Route::post('login', 'login')->name('api.auth.login');
 
         Route::middleware('auth:api')->group(function () {
             Route::post('logout', 'logout')->name('api.auth.logout');
+
             Route::post('refresh', 'refresh')->name('api.auth.refresh');
         });
     });
 
-/**
- * Account Management
- */
+/*
+|--------------------------------------------------------------------------
+| ACCOUNT
+|--------------------------------------------------------------------------
+*/
 Route::prefix('account')
     ->middleware('auth:api')
     ->controller(AccountController::class)
     ->group(function () {
         Route::get('me', 'me')->name('api.account.me');
+
         Route::post('change-password', 'changePassword')->name('api.account.change-password');
     });
 
-/**
- * User Management
- */
+/*
+|--------------------------------------------------------------------------
+| USERS
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth:api', 'role:admin'])
     ->prefix('users')
     ->controller(UserController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('api.users.index')->middleware('permission:user.view');
+        Route::get('/', 'index')->name('api.users.index')->middleware('permission:users.view');
 
-        Route::post('/', 'store')->name('api.users.store')->middleware('permission:user.create');
+        Route::post('/', 'store')->name('api.users.store')->middleware('permission:users.create');
 
-        Route::get('/{user}', 'show')->name('api.users.show')->middleware('permission:user.view');
+        Route::get('{user}', 'show')->name('api.users.show')->middleware('permission:users.view');
 
-        Route::put('/{user}', 'update')
+        Route::put('{user}', 'update')
             ->name('api.users.update')
-            ->middleware('permission:user.update');
+            ->middleware('permission:users.update');
 
-        Route::delete('/{user}', 'destroy')
+        Route::delete('{user}', 'destroy')
             ->name('api.users.destroy')
-            ->middleware('permission:user.delete');
+            ->middleware('permission:users.delete');
 
-        Route::patch('/{user}/restore', 'restore')
+        Route::patch('{user}/restore', 'restore')
             ->name('api.users.restore')
-            ->middleware('permission:user.restore')
-            ->withTrashed();
+            ->middleware('permission:users.restore');
     });
 
-/**
- * Member Management
- */
+/*
+|--------------------------------------------------------------------------
+| MEMBERS
+|--------------------------------------------------------------------------
+*/
 Route::prefix('members')
+    ->middleware('auth:api')
     ->controller(MemberController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('api.members.index')->middleware('permission:member.view');
+        Route::get('/', 'index')->name('api.members.index')->middleware('permission:members.view');
+
         Route::post('/', 'store')
-            ->name('api.members.create')
-            ->middleware('permission:member.create');
+            ->name('api.members.store')
+            ->middleware('permission:members.create');
+
         Route::get('{member}', 'show')
-            ->name('api.members.detail')
-            ->middleware('permission:member.view');
+            ->name('api.members.show')
+            ->middleware('permission:members.view');
+
         Route::put('{member}', 'update')
             ->name('api.members.update')
-            ->middleware('permission:member.update');
+            ->middleware('permission:members.update');
+
         Route::delete('{member}', 'destroy')
-            ->name('api.members.delete')
-            ->middleware('permission:member.delete');
+            ->name('api.members.destroy')
+            ->middleware('permission:members.delete');
+
         Route::patch('{member}/restore', 'restore')
             ->name('api.members.restore')
-            ->middleware('permission:member.restore')
-            ->withTrashed();
+            ->middleware('permission:members.restore');
 
-        /**
-         * MEMBER-HOBBY RELATION
-         */
-        Route::post('{member}/hobbies', 'attachHobbies')
-            ->name('api.members.attachHobbies')
-            ->middleware('permission:member.update');
-        Route::put('{member}/hobbies', 'syncHobbies')
-            ->name('api.members.syncHobbies')
-            ->middleware('permission:member.update');
-        Route::delete('{member}/hobbies/{hobby}', 'detachHobby')
-            ->name('api.members.detachHobby')
-            ->middleware('permission:member.update');
+        /*
+        |--------------------------------------------------------------------------
+        | MEMBER - HOBBIES (RELATION)
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('{member}/hobbies', 'hobbies')
-            ->name('api.members.hobbies')
-            ->middleware('permission:member.view');
+            ->name('api.members.hobbies.index')
+            ->middleware('permission:members.hobbies.view');
+
+        Route::post('{member}/hobbies', 'attachHobbies')
+            ->name('api.members.hobbies.attach')
+            ->middleware('permission:members.hobbies.attach');
+
+        Route::put('{member}/hobbies', 'syncHobbies')
+            ->name('api.members.hobbies.sync')
+            ->middleware('permission:members.hobbies.sync');
+
+        Route::delete('{member}/hobbies/{hobby}', 'detachHobby')
+            ->name('api.members.hobbies.detach')
+            ->middleware('permission:members.hobbies.detach');
     });
 
-/**
- * Hobby Management
- */
+/*
+|--------------------------------------------------------------------------
+| HOBBIES
+|--------------------------------------------------------------------------
+*/
 Route::prefix('hobbies')
+    ->middleware('auth:api')
     ->controller(HobbyController::class)
     ->group(function () {
-        Route::get('/', 'index')->name('api.hobbies.index')->middleware('permission:hobby.view');
+        Route::get('/', 'index')->name('api.hobbies.index')->middleware('permission:hobbies.view');
 
         Route::post('/', 'store')
-            ->name('api.hobbies.create')
-            ->middleware('permission:hobby.create');
+            ->name('api.hobbies.store')
+            ->middleware('permission:hobbies.create');
 
         Route::get('{hobby}', 'show')
-            ->name('api.hobbies.detail')
-            ->middleware('permission:hobby.view');
+            ->name('api.hobbies.show')
+            ->middleware('permission:hobbies.view');
 
         Route::put('{hobby}', 'update')
             ->name('api.hobbies.update')
-            ->middleware('permission:hobby.update');
+            ->middleware('permission:hobbies.update');
 
         Route::delete('{hobby}', 'destroy')
-            ->name('api.hobbies.delete')
-            ->middleware('permission:hobby.delete');
+            ->name('api.hobbies.destroy')
+            ->middleware('permission:hobbies.delete');
     });
