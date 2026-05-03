@@ -38,6 +38,8 @@ Route::prefix('account')
         Route::get('me', 'me')->name('api.account.me');
 
         Route::post('change-password', 'changePassword')->name('api.account.change-password');
+
+        Route::patch('/', 'update')->name('api.account.update');
     });
 
 /*
@@ -57,6 +59,10 @@ Route::middleware(['auth:api', 'role:admin'])
 
         Route::put('{user}', 'update')
             ->name('api.users.update')
+            ->middleware('permission:users.update');
+
+        Route::patch('{user}', 'patch')
+            ->name('api.users.patch')
             ->middleware('permission:users.update');
 
         Route::delete('{user}', 'destroy')
@@ -89,6 +95,10 @@ Route::prefix('members')
 
         Route::put('{member}', 'update')
             ->name('api.members.update')
+            ->middleware('permission:members.update');
+
+        Route::patch('{member}', 'patch')
+            ->name('api.members.patch')
             ->middleware('permission:members.update');
 
         Route::delete('{member}', 'destroy')
