@@ -65,10 +65,44 @@ class MemberService
         return $member;
     }
 
-    public function detail(Member $member): Member
+    public function show(Member $member): Member
     {
         $member->load('hobbies');
 
         return $member;
+    }
+
+    public function attachHobbies(Member $member, array $hobbyIds)
+    {
+        $existing = $member->hobbies()->pluck('hobby_id')->toArray();
+
+        $filtered = array_values(array_diff($hobbyIds, $existing));
+
+        if (empty($filtered)) {
+            return $member->load('hobbies');
+        }
+
+        $member->hobbies()->attach($filtered);
+
+        return $member->load('hobbies');
+    }
+
+    public function syncHobbies(Member $member, array $hobbyIds)
+    {
+        $member->hobbies()->sync($hobbyIds);
+
+        return $member->load('hobbies');
+    }
+
+    public function detachHobby(Member $member, int $hobbyId)
+    {
+        $member->hobbies()->detach($hobbyId);
+
+        return $member->load('hobbies');
+    }
+
+    public function getHobbies(Member $member)
+    {
+        return $member->hobbies;
     }
 }

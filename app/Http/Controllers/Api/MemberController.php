@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Member\MemberHobbyRequest;
 use App\Http\Requests\Member\StoreRequest;
 use App\Http\Requests\Member\UpdateRequest;
+use App\Http\Resources\HobbyResource;
 use App\Http\Resources\MemberResource;
+use App\Models\Hobby;
 use App\Models\Member;
 use App\Services\MemberService;
 use Illuminate\Http\Request;
@@ -38,7 +41,7 @@ class MemberController extends Controller
     public function show(Member $member)
     {
         return ApiResponse::success(
-            new MemberResource($this->memberService->detail($member)),
+            new MemberResource($this->memberService->show($member)),
             'Member detail retrieved',
         );
     }
@@ -62,5 +65,45 @@ class MemberController extends Controller
         $member = $this->memberService->restore($member);
 
         return ApiResponse::success(new MemberResource($member), 'Member restored');
+    }
+
+    public function attachHobbies(MemberHobbyRequest $request, Member $member)
+    {
+        $member = $this->memberService->attachHobbies($member, $request->validated('hobby_ids'));
+
+        return ApiResponse::success(
+            HobbyResource::collection($member->hobbies),
+            'Hobbies attached successfully.',
+        );
+    }
+
+    public function syncHobbies(MemberHobbyRequest $request, Member $member)
+    {
+        $member = $this->memberService->syncHobbies($member, $request->validated('hobby_ids'));
+
+        return ApiResponse::success(
+            HobbyResource::collection($member->hobbies),
+            'Hobbies updated successfully.',
+        );
+    }
+
+    public function detachHobby(Member $member, Hobby $hobby)
+    {
+        $member = $this->memberService->detachHobby($member, $hobby->id);
+
+        return ApiResponse::success(
+            HobbyResource::collection($member->hobbies),
+            'Hobby removed successfully.',
+        );
+    }
+
+    public function hobbies(Member $member)
+    {
+        $memberHobbies = $this->memberService->getHobbies($member);
+
+        return ApiResponse::success(
+            HobbyResource::collection($memberHobbies),
+            'Member hobbies retrieved successfully.',
+        );
     }
 }
