@@ -47,7 +47,7 @@ Route::prefix('account')
 | USERS
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth:api', 'role:admin'])
+Route::middleware('auth:api')
     ->prefix('users')
     ->controller(UserController::class)
     ->group(function () {
