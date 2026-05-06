@@ -2,36 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<Member>
  */
-class UserFactory extends Factory
+class MemberFactory extends Factory
 {
-    protected static ?string $password = null;
-
     public function definition(): array
     {
         return [
             'name' => fake()->name(),
+            'phone' => fake()->phoneNumber(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => (self::$password ??= Hash::make(config('user.defaults.password'))),
-            'is_active' => fake()->boolean(80),
-            'remember_token' => fake()->regexify('[A-Za-z0-9]{10}'),
+            'is_active' => true,
         ];
-    }
-
-    public function unverified(): static
-    {
-        return $this->state(
-            fn() => [
-                'email_verified_at' => null,
-            ],
-        );
     }
 
     public function inactive(): static

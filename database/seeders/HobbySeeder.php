@@ -9,8 +9,6 @@ class HobbySeeder extends Seeder
 {
     public function run(): void
     {
-        Hobby::truncate();
-
         $hobbies = [
             'Reading Books',
             'Writing Stories',
