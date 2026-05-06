@@ -42,7 +42,7 @@ class ApiResponse
         string $message = 'Data retrieved successfully',
     ) {
         return response()->json([
-            'success' => true,
+            'status' => 'success',
             'message' => $message,
             'data' => $resource::collection($paginator),
             'meta' => [
