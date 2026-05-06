@@ -34,7 +34,7 @@ class UserController extends Controller
     public function store(StoreRequest $request)
     {
         $user = $this->userService->store($request->validated());
-        return ApiResponse::success(new UserResource($user), 'User retrieved successfully.');
+        return ApiResponse::success(new UserResource($user), 'User retrieved successfully.', 201);
     }
 
     public function show(User $user)
