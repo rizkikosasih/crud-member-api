@@ -46,7 +46,7 @@ class HobbyController extends Controller
 
         $hobby = $this->hobbyService->create($validated);
 
-        return ApiResponse::success(new HobbyResource($hobby), 'Hobby created successfully');
+        return ApiResponse::success(new HobbyResource($hobby), 'Hobby created successfully', 201);
     }
 
     public function update(Request $request, Hobby $hobby)

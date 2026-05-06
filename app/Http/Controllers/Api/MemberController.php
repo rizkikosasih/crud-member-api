@@ -36,7 +36,7 @@ class MemberController extends Controller
     {
         $member = $this->memberService->create($request->validated());
 
-        return ApiResponse::success(new MemberResource($member), 'Member created successfully');
+        return ApiResponse::success(new MemberResource($member), 'Member created successfully', 201);
     }
 
     public function show(Member $member)
