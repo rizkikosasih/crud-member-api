@@ -40,6 +40,13 @@ class HobbyController extends Controller
         );
     }
 
+    public function show(Hobby $hobby)
+    {
+        $hobby = $this->hobbyService->show($hobby);
+
+        return ApiResponse::success(new HobbyResource($hobby), 'Hobby retrieved successfully');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate($this->hobbyRules(), $this->hobbyMessages());
@@ -58,7 +65,7 @@ class HobbyController extends Controller
         return ApiResponse::success(new HobbyResource($hobby), 'Hobby updated successfully');
     }
 
-    public function delete(Hobby $hobby)
+    public function destroy(Hobby $hobby)
     {
         $this->hobbyService->delete($hobby);
 
