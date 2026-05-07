@@ -16,8 +16,6 @@ class PatchRequest extends FormRequest
 
             'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($userId)],
 
-            'phone' => ['nullable', 'string', 'regex:/^\+?[0-9]+$/', 'max:20'],
-
             'is_active' => ['sometimes', 'boolean'],
         ];
     }
@@ -31,10 +29,6 @@ class PatchRequest extends FormRequest
 
             'email.email' => 'Please provide a valid email address.',
             'email.unique' => 'This email address is already registered.',
-
-            'phone.string' => 'Phone number must be a valid string.',
-            'phone.regex' => 'Phone number may only contain numbers and optional leading +.',
-            'phone.max' => 'Phone number may not be greater than :max characters.',
 
             'is_active.boolean' => 'Active status must be true or false.',
         ];
