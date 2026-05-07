@@ -68,15 +68,19 @@ class ApiExceptionHandler
             $e instanceof AuthorizationException,
             $e instanceof SpatieUnauthorizedException,
             $e instanceof AccessDeniedHttpException
-                => self::jsonResponse(403, 'Forbidden.', self::isDebug() ? self::debug($e) : []),
+                => self::jsonResponse(
+                403,
+                'This action is unauthorized.',
+                self::isDebug() ? self::debug($e) : [],
+            ),
             /**
              * MODEL NOT FOUND
              */
             $e instanceof ModelNotFoundException,
             $e instanceof NotFoundHttpException
                 => self::jsonResponse(
-                404,
-                'Resource not found.',
+                $e->getCode() ?: 404,
+                $e->getMessage() ?: 'Resource not found.',
                 self::isDebug() ? self::debug($e) : [],
             ),
             /**
