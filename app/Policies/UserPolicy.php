@@ -23,6 +23,6 @@ class UserPolicy
 
     public function restore(User $authUser, User $user): bool
     {
-        return $authUser->id !== $user->id && $user->trashed();
+        return $authUser->id !== $user->id;
     }
 }
