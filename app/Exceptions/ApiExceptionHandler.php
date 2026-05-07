@@ -79,8 +79,8 @@ class ApiExceptionHandler
             $e instanceof ModelNotFoundException,
             $e instanceof NotFoundHttpException
                 => self::jsonResponse(
-                $e->getCode() ?: 404,
-                $e->getMessage() ?: 'Resource not found.',
+                404,
+                self::isDebug() ? $e->getMessage() : 'Resource not found.',
                 self::isDebug() ? self::debug($e) : [],
             ),
             /**
