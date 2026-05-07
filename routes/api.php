@@ -71,7 +71,8 @@ Route::middleware('auth:api')
 
         Route::patch('{user}/restore', 'restore')
             ->name('api.users.restore')
-            ->middleware('permission:users.restore');
+            ->middleware('permission:users.restore')
+            ->withTrashed();
     });
 
 /*
@@ -107,7 +108,8 @@ Route::prefix('members')
 
         Route::patch('{member}/restore', 'restore')
             ->name('api.members.restore')
-            ->middleware('permission:members.restore');
+            ->middleware('permission:members.restore')
+            ->withTrashed(['member']);
 
         /*
         |--------------------------------------------------------------------------
