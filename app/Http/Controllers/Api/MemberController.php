@@ -32,18 +32,22 @@ class MemberController extends Controller
         );
     }
 
-    public function store(StoreRequest $request)
-    {
-        $member = $this->memberService->create($request->validated());
-
-        return ApiResponse::success(new MemberResource($member), 'Member created successfully', 201);
-    }
-
     public function show(Member $member)
     {
         return ApiResponse::success(
             new MemberResource($this->memberService->show($member)),
             'Member detail retrieved',
+        );
+    }
+
+    public function store(StoreRequest $request)
+    {
+        $member = $this->memberService->create($request->validated());
+
+        return ApiResponse::success(
+            new MemberResource($member),
+            'Member created successfully',
+            201,
         );
     }
 
