@@ -9,21 +9,23 @@ class AuthResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $user = $this['user'];
+
         return [
-            'token' => $this->token,
+            'token' => $this['token'],
             'type' => 'bearer',
             'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-                'is_active' => $this->user->is_active,
-                'created_at' => $this->user->created_at
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'is_active' => $user->is_active,
+                'created_at' => $user->created_at
                     ->timezone('Asia/Jakarta')
                     ->locale('id')
                     ->translatedFormat('l, d F Y H:i:s'),
             ],
-            'roles' => $this->user->getRoleNames(),
-            'permissions' => $this->user->getAllPermissions()->pluck('name'),
+            'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
         ];
     }
 }
