@@ -37,20 +37,12 @@
   "prettier.configPath": ".prettierrc.json",
   "sqltools.connections": [
     {
-      "mysqlOptions": {
-        "authProtocol": "default",
-        "enableSsl": "Disabled"
-      },
-      "ssh": "Disabled",
       "previewLimit": 50,
-      "server": "localhost",
-      "port": 3306,
-      "driver": "MySQL",
-      "username": "root",
-      "database": "member_api",
+      "driver": "SQLite",
       "name": "member-api",
-      "password": ""
+      "database": "database/database.sqlite"
     }
   ],
+  "sqltools.useNodeRuntime": true,
 
 }
