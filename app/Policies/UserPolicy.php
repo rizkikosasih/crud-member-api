@@ -11,6 +11,11 @@ class UserPolicy
         return $authUser->id !== $user->id;
     }
 
+    public function patch(User $authUser, User $user): bool
+    {
+        return $authUser->id !== $user->id;
+    }
+
     public function delete(User $authUser, User $user): bool
     {
         return $authUser->id !== $user->id;
@@ -18,6 +23,6 @@ class UserPolicy
 
     public function restore(User $authUser, User $user): bool
     {
-        return $authUser->id !== $user->id;
+        return $authUser->id !== $user->id && $user->trashed();
     }
 }

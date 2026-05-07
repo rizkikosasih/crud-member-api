@@ -47,9 +47,7 @@ class UserController extends Controller
 
     public function update(UpdateRequest $request, User $user)
     {
-        if (Gate::denies('update', $user)) {
-            throw new HttpException(403, 'You cannot update your own account.');
-        }
+        $this->authorize('update', $user);
 
         $user = $this->userService->update($user, $request->validated());
         return ApiResponse::success(new UserResource($user), 'User updated.');
@@ -57,9 +55,7 @@ class UserController extends Controller
 
     public function patch(PatchRequest $request, User $user)
     {
-        if (Gate::denies('update', $user)) {
-            throw new HttpException(403, 'You cannot update your own account.');
-        }
+        $this->authorize('patch', $user);
 
         $user = $this->userService->update($user, $request->validated());
         return ApiResponse::success(new UserResource($user), 'User updated.');
@@ -67,9 +63,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (Gate::denies('delete', $user)) {
-            throw new HttpException(403, 'You cannot delete your own account.');
-        }
+        $this->authorize('delete', $user);
 
         $this->userService->delete($user);
 
@@ -78,9 +72,7 @@ class UserController extends Controller
 
     public function restore(User $user)
     {
-        if (Gate::denies('restore', $user)) {
-            throw new HttpException(403, 'You cannot restore your own account.');
-        }
+        $this->authorize('restore', $user);
 
         $user = $this->userService->restore($user);
 
