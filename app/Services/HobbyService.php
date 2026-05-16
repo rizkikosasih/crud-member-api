@@ -5,14 +5,14 @@ namespace App\Services;
 use App\Events\Hobby\HobbyCreatedEvent;
 use App\Events\Hobby\HobbyUpdatedEvent;
 use App\Models\Hobby;
-use App\Repositories\HobbyRepository;
+use App\Repositories\Contracts\HobbyRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HobbyService
 {
-    public function __construct(protected HobbyRepository $hobbyRepository) {}
+    public function __construct(protected HobbyRepositoryInterface $hobbyRepository) {}
 
     private function actorId(): ?int
     {

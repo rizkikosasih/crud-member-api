@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Contracts\HobbyRepositoryInterface;
-use App\Contracts\MemberRepositoryInterface;
-use App\Contracts\UserRepositoryInterface;
+use App\Repositories\Contracts\HobbyRepositoryInterface;
+use App\Repositories\Contracts\MemberRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\HobbyRepository;
 use App\Repositories\MemberRepository;
 use App\Repositories\UserRepository;

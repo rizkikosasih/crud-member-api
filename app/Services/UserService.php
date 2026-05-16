@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\UserRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Events\User\UserCreatedEvent;
 use App\Events\User\UserDeletedEvent;
 use App\Events\User\UserRestoredEvent;

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Member;
-use App\Contracts\MemberRepositoryInterface;
+use App\Repositories\Contracts\MemberRepositoryInterface;
 use App\Events\Member\MemberCreatedEvent;
 use App\Events\Member\MemberDeletedEvent;
 use App\Events\Member\MemberRestoredEvent;
