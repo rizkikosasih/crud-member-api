@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Events\Account\AccountPasswordChangedEvent;
+use App\Events\Account\AccountUpdatedEvent;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use PHPOpenSourceSaver\JWTAuth\JWTGuard;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AccountService
 {
@@ -17,7 +21,15 @@ class AccountService
 
     public function me(): User
     {
-        return $this->guard->user();
+        /** @var User $user */
+        $user = $this->guard->user();
+
+        return $user->load('roles');
+    }
+
+    private function filterUpdatableFields(array $data): array
+    {
+        return array_intersect_key($data, array_flip(['name', 'email']));
     }
 
     public function changePassword(array $data): User
@@ -25,15 +37,19 @@ class AccountService
         /** @var User $user */
         $user = $this->guard->user();
 
-        if (!Hash::check($data['old_password'], $user->password)) {
-            abort(422, 'Old password incorrect');
-        }
+        return DB::transaction(function () use ($user, $data) {
+            if (!Hash::check($data['old_password'], $user->password)) {
+                throw new HttpException(422, 'Incorrect Password');
+            }
 
-        $user->update([
-            'password' => Hash::make($data['new_password']),
-        ]);
+            $user->update([
+                'password' => Hash::make($data['new_password']),
+            ]);
 
-        return $user;
+            event(new AccountPasswordChangedEvent($user->id, request()->ip()));
+
+            return $user->load('roles');
+        });
     }
 
     public function update(?array $data): User
@@ -41,10 +57,23 @@ class AccountService
         /** @var User $user */
         $user = $this->guard->user();
 
-        if (!empty($data)) {
-            $user->update($data);
-        }
+        return DB::transaction(function () use ($user, $data) {
+            $dirtyData = $this->filterUpdatableFields($data);
 
-        return $user;
+            $changes = [];
+
+            if (!empty($dirtyData)) {
+                $original = $user->only(array_keys($dirtyData));
+
+                $changes = array_diff_assoc($dirtyData, $original);
+
+                if (!empty($changes)) {
+                    $user->update($dirtyData);
+                    event(new AccountUpdatedEvent($user->id, $changes));
+                }
+            }
+
+            return $user->load('roles');
+        });
     }
 }
