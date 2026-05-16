@@ -119,7 +119,7 @@ class ApiExceptionHandler
             $e instanceof TokenExpiredException => 'Token expired.',
             $e instanceof TokenInvalidException => 'Invalid token.',
             $e instanceof TokenBlacklistedException => 'Token has been blacklisted.',
-            $e instanceof AuthenticationException => 'Unauthenticated.',
+            $e instanceof AuthenticationException => $e->getMessage() ?: 'Unauthenticated.',
             default => 'Authentication failed.',
         };
     }
